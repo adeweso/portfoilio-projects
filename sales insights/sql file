@@ -1,0 +1,80 @@
+select * 
+from customers
+;
+
+select count(*) 
+from transactions
+where market_code = "Mark001"
+;
+
+select *
+from transactions
+where currency = "USD"
+;
+
+select year(order_date), sum(sales_amount), format(avg(sales_amount), 0)
+from transactions
+group by year(order_date)
+order by sum(sales_amount) desc
+;
+
+
+select *
+from transactions
+join `date`
+	on transactions.order_date = `date`.`date`
+;
+    
+select product_code, format(sum(sales_amount), 0)
+from transactions
+join markets
+	on 	transactions.market_code = markets.markets_code
+where markets_name = "Chennai" and order_date like "2020-%%-%%"
+group by product_code
+order by sum(sales_amount) desc
+limit 5
+;
+
+select format(sum(sales_amount), 0)
+from transactions
+where market_code = "Mark001" and order_date like "2020-%%-%%"
+;
+
+-- extract transform and load - ETL
+
+
+select market_code, sum(sales_amount)
+from transactions
+group by market_code
+order by sum(sales_amount) desc
+;
+
+select *
+from transactions
+where sales_qty = 59
+;
+
+select *,
+row_number() over(partition by product_code, customer_code, market_code,
+order_date, sales_qty, sales_amount, currency) 	
+from transactions
+;
+
+with dupli as
+(
+select *,
+row_number() over(partition by product_code, customer_code, market_code,
+order_date, sales_qty, sales_amount, currency) as row_num
+from transactions
+)
+select *
+from dupli
+;
+
+select *
+from transactions
+where sales_qty = 8000 
+;
+
+'INR'
+'INR\r'
